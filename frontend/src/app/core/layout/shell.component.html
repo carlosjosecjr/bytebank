@@ -1,0 +1,56 @@
+<mat-toolbar class="toolbar">
+  @if (isMobile()) {
+    <button mat-icon-button aria-label="Abrir menu" (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
+  <a class="brand" routerLink="/inicio"><mat-icon>account_balance</mat-icon><span>Bytebank</span></a>
+  <span class="spacer"></span>
+  @if (!isMobile()) { <span class="user-name">{{ session.user()?.name }}</span> }
+  <button mat-icon-button class="avatar" [matMenuTriggerFor]="profileMenu" aria-label="Menu do perfil"
+          bbPrefetch="minha-conta">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #profileMenu="matMenu" xPosition="before">
+    <a mat-menu-item routerLink="/minha-conta"><mat-icon>person</mat-icon>Minha conta</a>
+    <button mat-menu-item disabled><mat-icon>settings</mat-icon>Configurações</button>
+    <mat-divider />
+    <button mat-menu-item (click)="logout()"><mat-icon>logout</mat-icon>Sair</button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav #drawer mode="over" class="drawer">
+    <mat-nav-list>
+      @for (item of nav; track item.path) {
+        <a mat-list-item [routerLink]="item.path" routerLinkActive="active" #rla="routerLinkActive"
+           [activated]="rla.isActive" (click)="drawer.close()" [bbPrefetch]="item.path">{{ item.label }}</a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    @if (layout() === 'tablet') {
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="tabs" aria-label="Navegação principal">
+        @for (item of nav; track item.path) {
+          <a mat-tab-link [routerLink]="item.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive"
+             [bbPrefetch]="item.path">{{ item.label }}</a>
+        }
+      </nav>
+    }
+    <mat-tab-nav-panel #tabPanel />
+
+    <div class="body" [class.with-side-nav]="layout() === 'desktop'">
+      @if (layout() === 'desktop') {
+        <nav class="side-nav" aria-label="Navegação principal">
+          @for (item of nav; track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="active" [bbPrefetch]="item.path">{{ item.label }}</a>
+          }
+        </nav>
+      }
+      <main class="content">
+        <router-outlet />
+      </main>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

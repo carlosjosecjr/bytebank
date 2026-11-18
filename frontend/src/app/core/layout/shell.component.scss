@@ -1,0 +1,54 @@
+:host { display: flex; flex-direction: column; min-height: 100dvh; }
+
+.toolbar {
+  background: var(--bb-petrol);
+  color: #fff;
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 2;
+}
+/* Ícones da barra (ex.: menu hambúrguer) em branco sobre o petróleo; o avatar mantém o laranja. */
+.toolbar .mat-mdc-icon-button { color: inherit; }
+.brand { display: flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; font: var(--mat-sys-title-large); }
+.spacer { flex: 1; }
+.user-name { font: var(--mat-sys-label-large); margin-right: 8px; }
+.toolbar .avatar { color: var(--bb-accent); }
+
+.container { flex: 1; background: var(--bb-background); }
+.drawer { width: 260px; }
+.drawer .active { color: var(--bb-green); font-weight: 600; }
+
+.tabs { background: transparent; }
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+.body.with-side-nav { grid-template-columns: 180px minmax(0, 1fr); }
+
+.side-nav {
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  background: var(--mat-sys-surface-container-lowest);
+  border-radius: 8px;
+  padding: 16px;
+}
+.side-nav a {
+  padding: 12px 0;
+  text-align: center;
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font: var(--mat-sys-body-large);
+}
+.side-nav a:last-child { border-bottom: 0; }
+.side-nav a.active { color: var(--bb-green); font-weight: 600; border-bottom: 2px solid var(--bb-green); }
+.side-nav a:focus-visible { outline: 2px solid var(--bb-petrol); outline-offset: 2px; }
+
+.content { min-width: 0; }

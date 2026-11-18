@@ -1,0 +1,59 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+  @include mat.theme((
+    color: (primary: mat.$cyan-palette, tertiary: mat.$green-palette),
+    typography: (plain-family: 'Inter, Roboto, system-ui, sans-serif', brand-family: 'Inter, Roboto, system-ui, sans-serif'),
+    density: 0,
+  ));
+
+  // Cores do Bytebank sobre o tema Material (petróleo + verde + laranja das telas de referência).
+  @include mat.theme-overrides((
+    primary: #004d61,
+    on-primary: #ffffff,
+    primary-container: #cfe6ec,
+    on-primary-container: #002029,
+    tertiary: #47a138,
+  ));
+
+  --bb-petrol: #004d61;
+  --bb-green: #47a138;
+  --bb-green-soft: #cfe5cb;
+  --bb-accent: #ff5031;
+  --bb-orange: #ff5031;
+  --bb-background: #e4ede3;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Roboto, system-ui, sans-serif;
+  background: var(--bb-background);
+  color: var(--mat-sys-on-surface);
+}
+
+/* Grade das páginas da conta: coluna principal + extrato à direita (empilha abaixo de 1200px). */
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+
+  .main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .statement-placeholder { min-height: 320px; border-radius: 12px; background: var(--mat-sys-surface-container-low); }
+
+  /* Desktop: o extrato fica fixo ao lado, com rolagem própria (a rolagem infinita acontece dentro dele),
+     em vez de esticar a página inteira a cada página carregada. */
+  @media (min-width: 1200px) {
+    .side {
+      position: sticky;
+      top: calc(64px + 24px + env(safe-area-inset-top, 0px)); /* toolbar + respiro */
+      max-height: calc(100dvh - 64px - 48px - env(safe-area-inset-top, 0px));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border-radius: 12px;
+    }
+  }
+
+  @media (max-width: 1199px) { grid-template-columns: minmax(0, 1fr); }
+}

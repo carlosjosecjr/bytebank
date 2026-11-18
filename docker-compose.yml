@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bytebank-db
+    restart: always
+    environment:
+      POSTGRES_USER: bytebank
+      POSTGRES_PASSWORD: bytebank_secret_password
+      POSTGRES_DB: bytebank
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bytebank -d bytebank"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bytebank-api
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://bytebank:bytebank_secret_password@db:5432/bytebank
+      JWT_SECRET: bytebank_super_secret_jwt_key_2026
+      HOST: 0.0.0.0
+      PORT: 8000
+      # Cookie httpOnly do front: true quando servido via HTTPS
+      COOKIE_SECURE: "false"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bytebank-web
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  postgres_data:
